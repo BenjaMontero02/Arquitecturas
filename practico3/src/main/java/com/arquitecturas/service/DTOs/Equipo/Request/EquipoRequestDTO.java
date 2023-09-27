@@ -6,7 +6,7 @@ import lombok.Data;
 
 
 @Data
-public class EquipoRequestDto {
+public class EquipoRequestDTO {
 
     @NotEmpty(message = "El nombre del equipo no puede ser vacio")
     @NotNull(message = "el nombre del equipo no puede ser nulo")
@@ -16,7 +16,7 @@ public class EquipoRequestDto {
     @NotNull(message = "el nombre del tecnico no puede ser nulo")
     private String tecnico;
 
-    public EquipoRequestDto(String nombre, String tecnico){
+    public EquipoRequestDTO(String nombre, String tecnico){
         this.nombre = nombre;
         this.tecnico = tecnico;
     }

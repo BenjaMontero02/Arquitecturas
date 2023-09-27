@@ -1,5 +1,6 @@
 package com.arquitecturas.domain;
 
+import com.arquitecturas.service.DTOs.Grupo.Request.GrupoRequestDTO;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -33,8 +34,8 @@ public class Grupo {
         this.equipos.add(e);
     }
 
-    public Grupo(String nombre) {
-        this.nombre = nombre;
+    public Grupo(GrupoRequestDTO g) {
+        this.nombre = g.getNombre();
         this.equipos = new ArrayList<>(4);
         this.partidos = new ArrayList<>();
     }

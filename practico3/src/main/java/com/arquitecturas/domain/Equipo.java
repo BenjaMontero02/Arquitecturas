@@ -1,6 +1,6 @@
 package com.arquitecturas.domain;
 
-import com.arquitecturas.service.DTOs.Equipo.Request.EquipoRequestDto;
+import com.arquitecturas.service.DTOs.Equipo.Request.EquipoRequestDTO;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -30,7 +30,7 @@ public class Equipo {
         super();
     }
 
-    public Equipo(EquipoRequestDto e){
+    public Equipo(EquipoRequestDTO e){
         super();
         this.nombre = e.getNombre();
         this.tecnico = e.getTecnico();

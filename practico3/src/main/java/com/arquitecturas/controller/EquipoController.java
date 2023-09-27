@@ -1,6 +1,7 @@
 package com.arquitecturas.controller;
 
 import com.arquitecturas.domain.Equipo;
+import com.arquitecturas.service.DTOs.Jugador.Request.JugadorRequestDTO;
 import com.arquitecturas.service.EquipoService;
 import com.arquitecturas.service.JugadorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,5 +38,10 @@ public class EquipoController {
     @PatchMapping("/")
     public void updateEquipo(@RequestBody Equipo e) {
         this.equipoService.save(e);
+    }
+
+    @PostMapping("/{nombre}/saveJugador")
+    public Long saveJugador(@PathVariable String nombre, @RequestBody JugadorRequestDTO jdto){
+        return this.equipoService.saveJugador(nombre, jdto);
     }
 }

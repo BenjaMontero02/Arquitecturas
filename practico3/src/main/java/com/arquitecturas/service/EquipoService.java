@@ -1,10 +1,13 @@
 package com.arquitecturas.service;
 
 import com.arquitecturas.domain.Equipo;
+import com.arquitecturas.domain.Jugador;
 import com.arquitecturas.repository.EquipoRepository;
+import com.arquitecturas.service.DTOs.Jugador.Request.JugadorRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -37,5 +40,12 @@ public class EquipoService {
 
     public void save(Equipo e) {
         this.equipoRepository.save(e);
+    }
+
+    @Transactional
+    public Long saveJugador(String nombre, JugadorRequestDTO jdto) {
+        Equipo e = this.equipoRepository.findByNombre(nombre);
+        e.addJugador(new Jugador(jdto.getPosicion(), jdto.getNombre(), e, jdto.isDisponible()));
+        return 0L;
     }
 }
