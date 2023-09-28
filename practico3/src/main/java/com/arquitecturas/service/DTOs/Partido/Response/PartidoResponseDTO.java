@@ -1,10 +1,8 @@
 package com.arquitecturas.service.DTOs.Partido.Response;
 
-import com.arquitecturas.domain.Equipo;
-import com.arquitecturas.domain.Gol;
 import com.arquitecturas.domain.Partido;
 import com.arquitecturas.service.DTOs.Equipo.Response.EquipoResponseDTO;
-import com.arquitecturas.service.DTOs.Gol.Request.GolResponseDTO;
+import com.arquitecturas.service.DTOs.Gol.Response.GolResponseDTO;
 
 import java.sql.Timestamp;
 import java.util.List;

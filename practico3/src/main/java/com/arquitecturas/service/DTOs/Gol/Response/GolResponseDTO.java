@@ -1,4 +1,4 @@
-package com.arquitecturas.service.DTOs.Gol.Request;
+package com.arquitecturas.service.DTOs.Gol.Response;
 
 import com.arquitecturas.domain.Gol;
 import com.arquitecturas.service.DTOs.Jugador.Response.JugadorResponseDTO;

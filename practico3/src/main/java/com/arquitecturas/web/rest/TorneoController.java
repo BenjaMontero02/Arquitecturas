@@ -2,11 +2,14 @@ package com.arquitecturas.web.rest;
 
 import com.arquitecturas.service.DTOs.Grupo.Request.GrupoRequestDTO;
 import com.arquitecturas.service.DTOs.Jugador.Request.JugadorRequestDTO;
+import com.arquitecturas.service.DTOs.Partido.Request.PartidoRequestDTO;
 import com.arquitecturas.service.DTOs.Torneo.Request.TorneoRequestDTO;
 import com.arquitecturas.domain.Jugador;
 import com.arquitecturas.domain.Torneo;
+import com.arquitecturas.service.DTOs.Torneo.Response.TorneoResponseDTO;
 import com.arquitecturas.service.GrupoService;
 import com.arquitecturas.service.TorneoService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import com.arquitecturas.service.DTOs.Equipo.Request.EquipoRequestDTO;
 
@@ -29,12 +32,12 @@ public class TorneoController {
     }
 
     @PostMapping("")
-    public Long save(@RequestBody TorneoRequestDTO t){
+    public Long save(@RequestBody @Valid TorneoRequestDTO t){
         return this.torneoService.save(t);
     }
 
     @GetMapping("/getByName/{nombre}")
-    public Torneo getTorneoByName(@PathVariable String nombre){
+    public TorneoResponseDTO getTorneoByName(@PathVariable String nombre){
         return this.torneoService.getTorneoByName(nombre);
     }
 
@@ -46,6 +49,11 @@ public class TorneoController {
     @PostMapping("/{nombre}/saveEquipo")
     public Long saveEquipo(@PathVariable String nombre, @RequestBody EquipoRequestDTO e){
         return this.torneoService.saveEquipo(nombre, e);
+    }
+
+    @PostMapping("/{nombre}/savePartido")
+    public Long saveEliminacion(@PathVariable String nombre, @RequestBody PartidoRequestDTO e){
+        return this.torneoService.savePartido(nombre, e);
     }
 
     @PostMapping("/{nombre}/saveGrupo")

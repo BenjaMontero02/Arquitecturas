@@ -17,6 +17,7 @@ public class EquipoService {
 
     private EquipoRepository equipoRepository;
 
+    @Transactional(readOnly = true)
     public Equipo getById(Long id) {
         Optional<Equipo> e =  this.equipoRepository.findById(id);
         if(e.isPresent()){
@@ -25,6 +26,7 @@ public class EquipoService {
         return null;
     }
 
+    @Transactional(readOnly = true)
     public Equipo getByNameAndTecnico(){
         Optional<Equipo> e = equipoRepository.findByNombreAndTecnico("river", "marcelo gallardo");
         if(e.isPresent()){
@@ -34,18 +36,19 @@ public class EquipoService {
         }
     }
 
-    public void deleteEquipo(Long id) {
-        this.equipoRepository.deleteById(id);
-    }
-
-    public void save(Equipo e) {
-        this.equipoRepository.save(e);
-    }
 
     @Transactional
     public Long saveJugador(String nombre, JugadorRequestDTO jdto) {
         Equipo e = this.equipoRepository.findByNombre(nombre);
         e.addJugador(new Jugador(jdto.getPosicion(), jdto.getNombre(), e, jdto.isDisponible()));
         return 0L;
+    }
+
+    @Transactional
+    public Long addJugador(String nombre, JugadorRequestDTO jugador) {
+        Equipo e = this.equipoRepository.findByNombre(nombre);
+        Jugador j = new Jugador(jugador.getPosicion(), jugador.getNombre(), e, jugador.isDisponible());
+        e.addJugador(j);
+        return j.getId();
     }
 }

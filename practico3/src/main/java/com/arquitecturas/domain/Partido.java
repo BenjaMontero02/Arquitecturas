@@ -41,14 +41,14 @@ public class Partido {
         this.goles.add(g);
     }
 
-    public Partido(Timestamp fecha, String resultado, Equipo a, Equipo b){
+    public Partido(Timestamp fecha, String resultado, Equipo a, Equipo b, List<Punto> puntos, List<Gol> goles){
         super();
         this.resultado = resultado;
         this.equipoA = a;
         this.equipoB = b;
         this.fecha = fecha;
-        this.puntos = new ArrayList<>();
-        this.goles = new ArrayList<>();
+        this.puntos = puntos;
+        this.goles = goles;
     }
 
     public Long getId() {
