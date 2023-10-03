@@ -67,4 +67,12 @@ public class Grupo {
     public void setPartidos(List<Partido> partidos) {
         this.partidos = partidos;
     }
+
+    public void removePartido(Partido partido) {
+        this.partidos.remove(partido);
+    }
+
+    public void removeEquipo(Equipo equipo) {
+        this.equipos.remove(equipo);
+    }
 }

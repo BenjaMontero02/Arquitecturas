@@ -1,14 +1,11 @@
 package com.arquitecturas.service;
-import com.arquitecturas.repository.EquipoRepository;
-import com.arquitecturas.repository.GrupoRepository;
-import com.arquitecturas.repository.JugadorRepository;
+import com.arquitecturas.repository.*;
 import com.arquitecturas.service.DTOs.Equipo.Request.EquipoRequestDTO;
 import com.arquitecturas.service.DTOs.Grupo.Request.GrupoRequestDTO;
 import com.arquitecturas.service.DTOs.Partido.Request.PartidoRequestDTO;
 import com.arquitecturas.service.DTOs.Torneo.Request.TorneoRequestDTO;
 import com.arquitecturas.domain.*;
 
-import com.arquitecturas.repository.TorneoRepository;
 import com.arquitecturas.service.DTOs.Torneo.Response.TorneoResponseDTO;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -24,18 +21,11 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class TorneoService {
-    private TorneoRepository torneoRepository;
-    private GrupoRepository grupoRepository;
-    private JugadorRepository jugadorRepository;
-    private EquipoRepository equipoRepository;
-
-    @Autowired
-    public TorneoService(TorneoRepository torneoRepository, GrupoRepository grupoRepository, EquipoRepository equipoRepository, JugadorRepository jug) {
-        this.torneoRepository = torneoRepository;
-        this.grupoRepository = grupoRepository;
-        this.equipoRepository = equipoRepository;
-        this.jugadorRepository = jug;
-    }
+    private final TorneoRepository torneoRepository;
+    private final GrupoRepository grupoRepository;
+    private final JugadorRepository jugadorRepository;
+    private final EquipoRepository equipoRepository;
+    private final PartidoRepository partidoRepository;
 
     @Transactional(readOnly = true)
     public TorneoResponseDTO getTorneoByName(String s){
@@ -51,12 +41,13 @@ public class TorneoService {
     }
 
     @Transactional
-    public Long saveEquipo(String nombreTorneo, EquipoRequestDTO e){
-        Torneo t = this.torneoRepository.findByNombre(nombreTorneo);
-        if(t != null){
+    public Long saveEquipo(Long id, EquipoRequestDTO e){
+        Optional<Torneo> t = this.torneoRepository.findById(id);
+        if(t.isPresent()){
             //preguntar si esta bien
+            Torneo t1 = t.get();
             Equipo equipo = new Equipo(e);
-            t.addEquipo(equipo);
+            t1.addEquipo(equipo);
             return equipo.getId();
         }
 
@@ -81,22 +72,24 @@ public class TorneoService {
     }
 
     @Transactional
-    public Long createGrupo(String nombre, GrupoRequestDTO e) {
-        Torneo torneo = this.torneoRepository.findByNombre(nombre);
-        if(torneo!= null){
+    public Long createGrupo(Long id, GrupoRequestDTO e) {
+        Optional<Torneo> torneo = this.torneoRepository.findById(id);
+        if(torneo.isPresent()){
             Grupo gr = new Grupo(e);
-            torneo.addGrupo(gr);
+            torneo.get().addGrupo(gr);
             return gr.getId();
         }
         return null;
     }
 
     @Transactional
-    public Long savePartido(String nombre, PartidoRequestDTO e) {
-        Torneo t = this.torneoRepository.findByNombre(nombre);
+    public Long savePartido(Long id, PartidoRequestDTO e) {
+        Optional<Torneo> t = this.torneoRepository.findById(id);
+        if(t.isPresent()){
+            Torneo t1 = t.get();
         Equipo a = this.equipoRepository.findByNombre(e.getEquipoA());
         Equipo b = this.equipoRepository.findByNombre(e.getEquipoB());
-        Partido p = new Partido();
+        Partido p = new Partido(e);
         p.setEquipoA(a);
         p.setEquipoB(b);
         p.setFecha(Timestamp.valueOf(e.getFecha()));
@@ -130,7 +123,49 @@ public class TorneoService {
 
             p.setGoles(goles);
         }
-        t.addEliminaciones(p);
-        return p.getId();
+        t1.addEliminaciones(p);
+        return p.getId();}
+        return null;
+    }
+
+    @Transactional
+    public void deleteById(Long id) {
+        this.torneoRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void deleteEquipo(Long id, Long idEquipo) {
+        Optional<Torneo> t = this.torneoRepository.findById(id);
+        if(t.isPresent()) {
+            Torneo torneo = t.get();
+            Equipo equipo = this.equipoRepository.findById(idEquipo).get();
+            torneo.removeEquipo(equipo);
+        }
+    }
+
+    @Transactional
+    public void deleteEliminacion(Long id, Long idPartido) {
+        Optional<Torneo> t = this.torneoRepository.findById(id);
+        if(t.isPresent()) {
+            Torneo torneo = t.get();
+            Optional<Partido> p = this.partidoRepository.findById(idPartido);
+            if(p.isPresent()) {
+                torneo.removeEliminacion(p.get());
+            }
+
+        }
+    }
+
+    @Transactional
+    public void deleteGrupo(Long id, Long idGrupo) {
+        Optional<Torneo> t = this.torneoRepository.findById(id);
+        if(t.isPresent()) {
+            Torneo torneo = t.get();
+            Optional<Grupo> gr = this.grupoRepository.findById(idGrupo);
+            if(gr.isPresent()){
+                torneo.removeGrupo(gr.get());
+
+            }
+        }
     }
 }

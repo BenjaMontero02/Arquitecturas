@@ -4,45 +4,46 @@ import com.arquitecturas.domain.*;
 import com.arquitecturas.repository.EquipoRepository;
 import com.arquitecturas.repository.GrupoRepository;
 import com.arquitecturas.repository.JugadorRepository;
+import com.arquitecturas.repository.PartidoRepository;
 import com.arquitecturas.service.DTOs.Equipo.Request.EquipoRequestDTO;
 import com.arquitecturas.service.DTOs.Partido.Request.PartidoRequestDTO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class GrupoService {
-    private GrupoRepository grupoRepository;
-    private EquipoRepository equipoRepository;
-
-    private JugadorRepository jugadorRepository;
-
-    @Autowired
-    public GrupoService(GrupoRepository grupoRepository, EquipoRepository equipoRepository, JugadorRepository jugadorRepository) {
-        this.grupoRepository = grupoRepository;
-        this.equipoRepository = equipoRepository;
-        this.jugadorRepository = jugadorRepository;
-    }
-
+    private final GrupoRepository grupoRepository;
+    private final EquipoRepository equipoRepository;
+    private final JugadorRepository jugadorRepository;
+    private final PartidoRepository partidoRepository;
 
     @Transactional
-    public Long addEquipo(String nombre, EquipoRequestDTO equipoRequestDTO) {
+    public Long addEquipo(Long id, EquipoRequestDTO equipoRequestDTO) {
         Equipo e = equipoRepository.findByNombre(equipoRequestDTO.getNombre());
         if(e != null){
-            Grupo g = grupoRepository.findByNombre(nombre);
-            g.addEquipos(e);
-            return e.getId();
+            Optional<Grupo> g = grupoRepository.findById(id);
+            if(g.isPresent()){
+                g.get().getEquipos().add(e);
+                return e.getId();
+            }
+            return null;
         }
         return null;
     }
 
     @Transactional
-    public Long addPartido(String nombre, PartidoRequestDTO e) {
-        Grupo grupo = this.grupoRepository.findByNombre(nombre);
+    public Long addPartido(Long id, PartidoRequestDTO e) {
+        Optional<Grupo> grupo = this.grupoRepository.findById(id);
+        if(grupo.isPresent()){
+            Grupo grupo1 = grupo.get();
         Equipo a = this.equipoRepository.findByNombre(e.getEquipoA());
         Equipo b = this.equipoRepository.findByNombre(e.getEquipoB());
         Partido p = new Partido();
@@ -79,7 +80,33 @@ public class GrupoService {
 
             p.setGoles(goles);
         }
-        grupo.addPartidos(p);
+        grupo1.addPartidos(p);
         return p.getId();
+        }
+        return null;
+    }
+
+    @Transactional
+    public void deletePartido(Long id, Long idPartido) {
+        Optional<Grupo> g = this.grupoRepository.findById(id);
+        if(g.isPresent()){
+            Optional<Partido> p = this.partidoRepository.findById(idPartido);
+            if(p.isPresent()){
+                g.get().removePartido(p.get());
+            }
+        }
+    }
+
+    @Transactional
+    public void deleteEquipo(Long id, Long idEquipo) {
+        Optional<Grupo> g = this.grupoRepository.findById(id);
+
+        if(g.isPresent()){
+            Optional<Equipo> e = this.equipoRepository.findById(idEquipo);
+            if(e.isPresent()){
+                g.get().removeEquipo(e.get());
+            }
+        }
+
     }
 }

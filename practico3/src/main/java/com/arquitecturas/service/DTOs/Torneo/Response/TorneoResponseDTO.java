@@ -15,12 +15,14 @@ import java.util.stream.Collectors;
 @Data
 public class TorneoResponseDTO {
 
+    private Long id;
     private String nombre;
     private List<GrupoResponseDTO> grupos;
     private List<PartidoResponseDTO> eliminaciones;
     private List<EquipoResponseDTO> equipos;
 
     public TorneoResponseDTO(Torneo t){
+        this.id = t.getId();
         this.nombre = t.getNombre();
         this.grupos = t.getGrupos().stream().map(g->new GrupoResponseDTO(g)).collect(Collectors.toList());
         this.eliminaciones = t.getEliminaciones().stream().map(p-> new PartidoResponseDTO(p)).collect(Collectors.toList());

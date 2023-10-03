@@ -5,12 +5,14 @@ import com.arquitecturas.service.DTOs.Equipo.Response.EquipoResponseDTO;
 
 public class JugadorResponseDTO {
 
+    private Long id;
     private String nombre;
     private String posicion;
     private boolean disponible;
     private EquipoResponseDTO equipo;
 
     public JugadorResponseDTO(Jugador j){
+        this.id = j.getId();
         this.nombre = j.getNombre();
         this.posicion = j.getPosicion();
         this.disponible = j.isDisponible();

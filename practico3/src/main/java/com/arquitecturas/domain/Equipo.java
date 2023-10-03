@@ -36,4 +36,8 @@ public class Equipo {
         this.tecnico = e.getTecnico();
         this.jugador = new ArrayList<>();
     }
+
+    public void removeJugador(Jugador jugador) {
+        this.jugador.remove(jugador);
+    }
 }

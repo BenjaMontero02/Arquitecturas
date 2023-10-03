@@ -9,12 +9,15 @@ import java.util.stream.Collectors;
 
 public class GrupoResponseDTO {
 
+    private Long id;
+
     public String nombre;
     private List<PartidoResponseDTO> partidos;
     private List<EquipoResponseDTO> equipos;
 
 
     public GrupoResponseDTO(Grupo g){
+        this.id = g.getId();
         this.nombre = g.getNombre();
         this.partidos = g.getPartidos().stream()
                         .map(partido -> new PartidoResponseDTO(partido))

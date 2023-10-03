@@ -48,5 +48,15 @@ public class Torneo {
     }
 
 
+    public void removeEquipo(Equipo equipo) {
+        this.equipos.remove(equipo);
+    }
 
+    public void removeEliminacion(Partido p){
+        this.eliminaciones.remove(p);
+    }
+
+    public void removeGrupo(Grupo grupo) {
+        this.grupos.remove(grupo);
+    }
 }

@@ -3,6 +3,7 @@ package com.arquitecturas.service;
 import com.arquitecturas.domain.Equipo;
 import com.arquitecturas.domain.Jugador;
 import com.arquitecturas.repository.EquipoRepository;
+import com.arquitecturas.repository.JugadorRepository;
 import com.arquitecturas.service.DTOs.Jugador.Request.JugadorRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class EquipoService {
 
-    private EquipoRepository equipoRepository;
+    private final EquipoRepository equipoRepository;
+    private final JugadorRepository jugadorRepository;
 
     @Transactional(readOnly = true)
     public Equipo getById(Long id) {
@@ -45,10 +47,27 @@ public class EquipoService {
     }
 
     @Transactional
-    public Long addJugador(String nombre, JugadorRequestDTO jugador) {
-        Equipo e = this.equipoRepository.findByNombre(nombre);
-        Jugador j = new Jugador(jugador.getPosicion(), jugador.getNombre(), e, jugador.isDisponible());
-        e.addJugador(j);
-        return j.getId();
+    public Long addJugador(Long id, JugadorRequestDTO jugador) {
+        Optional<Equipo> e = this.equipoRepository.findById(id);
+        if(e.isPresent()){
+            Equipo equipo = e.get();
+            Jugador j = new Jugador(jugador.getPosicion(), jugador.getNombre(), equipo, jugador.isDisponible());
+            equipo.addJugador(j);
+            return j.getId();
+        }
+        return null;
+    }
+
+    @Transactional
+    public void deleteJugador(Long id, Long idJugador) {
+        Optional<Equipo> e = this.equipoRepository.findById(id);
+        if(e.isPresent()){
+            Equipo equipo = e.get();
+            Optional<Jugador> j = this.jugadorRepository.findById(idJugador);
+            if(j.isPresent()){
+                Jugador jugador = j.get();
+                equipo.removeJugador(jugador);
+            }
+        }
     }
 }

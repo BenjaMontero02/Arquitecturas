@@ -10,6 +10,7 @@ import com.arquitecturas.service.DTOs.Torneo.Response.TorneoResponseDTO;
 import com.arquitecturas.service.GrupoService;
 import com.arquitecturas.service.TorneoService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import com.arquitecturas.service.DTOs.Equipo.Request.EquipoRequestDTO;
 
@@ -17,14 +18,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/torneo")
+@RequiredArgsConstructor
 public class TorneoController {
-    private TorneoService torneoService;
-    private GrupoService grupoService;
-
-    public TorneoController(TorneoService ts, GrupoService gs){
-        this.torneoService = ts;
-        this.grupoService = gs;
-    }
+    private final TorneoService torneoService;
+    private final GrupoService grupoService;
 
     @GetMapping("/getAllJugadores/{id}")
     public List<Jugador> getAllJugadores(@PathVariable Long id){
@@ -41,23 +38,37 @@ public class TorneoController {
         return this.torneoService.getTorneoByName(nombre);
     }
 
-    @GetMapping("/hola")
-    public String hola(){
-        return "hooolaa";
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id){
+        this.torneoService.deleteById(id);
+    }
+    @PostMapping("/{id}/equipo")
+    public Long saveEquipo(@PathVariable Long id, @RequestBody @Valid EquipoRequestDTO e){
+        return this.torneoService.saveEquipo(id, e);
     }
 
-    @PostMapping("/{nombre}/saveEquipo")
-    public Long saveEquipo(@PathVariable String nombre, @RequestBody EquipoRequestDTO e){
-        return this.torneoService.saveEquipo(nombre, e);
+    @DeleteMapping("/{id}/equipo/{idEquipo}")
+    public void deleteEquipo(@PathVariable Long id, @PathVariable Long idEquipo){
+        this.torneoService.deleteEquipo(id, idEquipo);
     }
 
-    @PostMapping("/{nombre}/savePartido")
-    public Long saveEliminacion(@PathVariable String nombre, @RequestBody PartidoRequestDTO e){
-        return this.torneoService.savePartido(nombre, e);
+    @PostMapping("/{id}/partido")
+    public Long saveEliminacion(@PathVariable Long id, @RequestBody @Valid PartidoRequestDTO e){
+        return this.torneoService.savePartido(id, e);
     }
 
-    @PostMapping("/{nombre}/saveGrupo")
-    public Long createGrupo(@PathVariable String nombre, @RequestBody GrupoRequestDTO e){
-        return this.torneoService.createGrupo(nombre, e);
+    @DeleteMapping("/{id}/partido/{idPartido}")
+    public void deleteEliminacion(@PathVariable Long id, Long idPartido ){
+        this.torneoService.deleteEliminacion(id, idPartido);
+    }
+
+    @PostMapping("/{id}/grupo")
+    public Long createGrupo(@PathVariable Long id, @RequestBody @Valid GrupoRequestDTO e){
+        return this.torneoService.createGrupo(id, e);
+    }
+
+    @DeleteMapping("/{id}/grupo/{idGrupo}")
+    public void deleteGrupo(@PathVariable Long id, @PathVariable Long idGrupo){
+        this.torneoService.deleteGrupo(id, idGrupo);
     }
 }

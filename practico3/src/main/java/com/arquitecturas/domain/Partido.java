@@ -1,5 +1,6 @@
 package com.arquitecturas.domain;
 
+import com.arquitecturas.service.DTOs.Partido.Request.PartidoRequestDTO;
 import jakarta.persistence.*;
 
 import java.sql.Timestamp;
@@ -31,7 +32,8 @@ public class Partido {
         super();
     }
 
-
+    public Partido(PartidoRequestDTO e) {
+    }
 
     public void addPoint(Punto p){
         this.puntos.add(p);
